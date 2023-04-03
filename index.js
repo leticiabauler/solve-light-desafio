@@ -1,35 +1,42 @@
-const express = require('express'); 
-const mongoose = require('mongoose'); 
-const app = express(); 
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
 
-//ler json 
-app.use(express.urlencoded({ 
+const app = express();
+
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
+//ler json
+app.use(
+  express.urlencoded({
     extended: true,
- }), 
- ) 
- 
- app.use(express.json()) 
+  })
+);
 
- //rotas da api
-const productRoutes = require('./routes/productRoutes')
+app.use(express.json());
 
-app.use('/product', productRoutes)
- 
- app.get('/', (req, res) => { 
-    
-//mostrar requisição 
-res.json({message: 'Hello!'}) }) 
-   
-const user = 'leticiabauler'
-const senha = 'solvelight123'
+//rotas da api
+const productRoutes = require("./routes/productRoutes");
 
-mongoose.connect(
+app.use("/product", productRoutes);
+
+// usuário e senha do mongo db, em uma aplicação real, não estaria aqui
+const user = "leticiabauler";
+const senha = "solvelight123";
+
+mongoose
+  .connect(
     `mongodb+srv://${user}:${senha}@apicluster.1zrcib6.mongodb.net/?retryWrites=true&w=majority`
-    )
-    .then(() => {
-        console.log("Conectamos ao MongoDB!")
-        app.listen(3000)
-    })
+  )
+  .then(() => {
+    console.log("Conectamos ao MongoDB!");
+    app.listen(3333);
+  })
 
-    .catch((err) => console.log(err))
-
+  .catch((err) => console.log(err));
